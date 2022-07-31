@@ -16,7 +16,7 @@ headX = 390
 headY = 270
 headX_change = 0.1
 headY_change = 0
-headRotation = 'right'
+headRotation = 'start'
 
 #create head rectangle
 headRect = pygame.Rect(headX, headY, 30, 30)
@@ -88,6 +88,8 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+
+        #snake keyboard controls
         if game_state is 'play':
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_a and headRotation != 'right':
@@ -106,9 +108,9 @@ while running:
                     headRotation = 'down'
                     headY_change = 30
                     headX_change = 0
-            if game_state is 'gameover':
-                headX_change = 0
-                headY_change = 0
+        if game_state is 'gameover':
+            headX_change = 0
+            headY_change = 0
     if headRect.colliderect(appleRect):
         while True:
             appleX = random.randint(0, 25)*30
@@ -146,8 +148,6 @@ while running:
                 gameover(textX, textY)
                 headX -= headX_change
                 headY -= headY_change
-                headX_change = 0
-                headY_change = 0
             drawhead(tailRect)
     #draw frozen snake because of gameover
     else:
