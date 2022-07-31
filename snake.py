@@ -120,25 +120,44 @@ while running:
         tail_count += 1
         score_count += 1
 
-    
-    #draw tail
-    for i in range(tail_count):
-        tailX[tail_count-i] = tailX[tail_count-i-1]
-        tailY[tail_count-i] = tailY[tail_count-i-1]
-        tailRect = pygame.Rect(tailX[tail_count-i], tailY[tail_count-i], 30, 30)
-        drawhead(tailRect)    
-
+    #calculate current head position
     headX += headX_change
     headY += headY_change
     if headX > 800 or headX < 0 or headY > 600 or headY < 0:
         gameover(textX, textY)
-        headX_change = 0
-        headY_change = 0
+        headX -= headX_change
+        headY -= headY_change  
         game_state = 'gameover'
 
     #draw current head position
     headRect = pygame.Rect(headX, headY, 30, 30)
     drawhead(headRect)
+
+    
+    #draw tail and check head vs tail collision
+    if game_state is 'play':
+        for i in range(tail_count):
+            tailX[tail_count-i] = tailX[tail_count-i-1]
+            tailY[tail_count-i] = tailY[tail_count-i-1]
+            tailRect = pygame.Rect(tailX[tail_count-i], tailY[tail_count-i], 30, 30)
+            headRect = pygame.Rect(headX, headY, 30, 30)
+            if headRect.colliderect(tailRect):
+                game_state = 'gameover'
+                gameover(textX, textY)
+                headX -= headX_change
+                headY -= headY_change
+                headX_change = 0
+                headY_change = 0
+            drawhead(tailRect)
+    #draw frozen snake because of gameover
+    else:
+        for i in range(tail_count):
+            tailRect = pygame.Rect(tailX[tail_count-i], tailY[tail_count-i], 30, 30)
+            drawhead(tailRect)
+
+    #display gameover
+    if game_state is 'gameover':
+        gameover(textX, textY)
 
     #draw current apple position
     appleRect = pygame.Rect(appleX, appleY, 30, 30)
