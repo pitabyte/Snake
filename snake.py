@@ -46,6 +46,16 @@ appleRect = pygame.Rect(appleX, appleY, 30, 30)
 def drawapple(appleRect):
     pygame.draw.rect(screen, color, appleRect)
 
+#check if position is already taken by a snake
+def check_position():
+    for x in tailX:
+        if appleX == x:
+            return False
+    for y in tailY:
+        if appleY == y:
+            return False
+    return True
+
 #clock
 clock = pygame.time.Clock()
 
@@ -58,6 +68,13 @@ def gameover(x, y):
     gameover = font.render('GAME OVER', True, (0, 0, 0))
     screen.blit(gameover, (x, y))
 
+#score
+score_count = 0
+score_font = pygame.font.Font('freesansbold.ttf', 16)
+def score_render():
+    scoreText = score_font.render('Score: ' + str(score_count), True, (0, 0, 0))
+    screen.blit(scoreText, (10, 10))
+
 game_state = 'play'
 
 running = True
@@ -65,6 +82,7 @@ running = True
 while running:
     screen.fill((255, 255, 255))
     clock.tick(10)
+    score_render()
     tailX[0] = headX
     tailY[0] = headY
     for event in pygame.event.get():
@@ -88,12 +106,19 @@ while running:
                     headRotation = 'down'
                     headY_change = 30
                     headX_change = 0
+            if game_state is 'gameover':
+                headX_change = 0
+                headY_change = 0
     if headRect.colliderect(appleRect):
-        appleX = random.randint(0, 25)*30
-        appleY = random.randint(0, 19)*30
+        while True:
+            appleX = random.randint(0, 25)*30
+            appleY = random.randint(0, 19)*30
+            if check_position() == True:
+                break
         tailX.append(tailX[tail_count])
         tailY.append(tailY[tail_count])
         tail_count += 1
+        score_count += 1
 
     
     #draw tail
