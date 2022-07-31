@@ -36,7 +36,6 @@ def drawtail(x, y):
 
 
 #draw apple
-
 appleX = random.randint(1, 25)*30 
 appleY = random.randint(1, 18)*30 
 
@@ -108,9 +107,11 @@ while running:
                     headRotation = 'down'
                     headY_change = 30
                     headX_change = 0
-        if game_state is 'gameover':
-            headX_change = 0
-            headY_change = 0
+    if game_state is 'gameover':
+        headX_change = 0
+        headY_change = 0
+
+    #check for collision head vs apple
     if headRect.colliderect(appleRect):
         while True:
             appleX = random.randint(0, 25)*30
@@ -128,14 +129,9 @@ while running:
     if headX > 800 or headX < 0 or headY > 600 or headY < 0:
         gameover(textX, textY)
         headX -= headX_change
-        headY -= headY_change  
+        headY -= headY_change
         game_state = 'gameover'
 
-    #draw current head position
-    headRect = pygame.Rect(headX, headY, 30, 30)
-    drawhead(headRect)
-
-    
     #draw tail and check head vs tail collision
     if game_state is 'play':
         for i in range(tail_count):
@@ -154,6 +150,10 @@ while running:
         for i in range(tail_count):
             tailRect = pygame.Rect(tailX[tail_count-i], tailY[tail_count-i], 30, 30)
             drawhead(tailRect)
+    
+    #draw current head position
+    headRect = pygame.Rect(headX, headY, 30, 30)
+    drawhead(headRect)
 
     #display gameover
     if game_state is 'gameover':
